@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="Generator" content="Kate, the KDE Advanced Text Editor" />
+<title>tree.asm</title>
+</head>
+<!-- Highlighting: "Intel x86 (NASM)" -->
+<body>
+<pre style='color:#1f1c1b;background-color:#ffffff;'>
+<span style='color:#898887;'>; Name       : tree.asm</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>;build       : aclocal &amp;&amp; autoconf &amp;&amp; automake --add-missing --foreign</span>
+<span style='color:#898887;'>;              mkdir build</span>
+<span style='color:#898887;'>;              cd build</span>
+<span style='color:#898887;'>;              ../configure</span>
+<span style='color:#898887;'>;              make</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>;description : an example of glib 2.0 balanced binary trees</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>;source      : https://github.com/steshaw/gtk-examples    </span>
+
+<b>bits</b><span style='color:#b08000;'> 64</span>
+
+[list -]
+    <b>extern</b>    g_tree_destroy
+    <b>extern</b>    g_tree_foreach    <span style='color:#898887;'>;g_tree_traverse is deprecated since 2.2</span>
+    <b>extern</b>    g_tree_height
+    <b>extern</b>    g_tree_insert
+    <b>extern</b>    g_tree_lookup
+    <b>extern</b>    g_tree_new
+    <b>extern</b>    g_tree_nnodes
+    <b>extern</b>    g_print
+    <b>extern</b>    strcmp
+    <b>extern</b>    exit
+[list +]
+
+<span style='color:#006e28;'>%define NNODES    4             ;nodes to show in g_tree_foreach</span>
+
+<b>section</b> .rodata
+<span style='color:#644a9b;'>    names:</span>
+<span style='color:#644a9b;'>    .fred:</span>       <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Fred&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .mary:</span>       <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Mary&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .sue:</span>        <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Sue&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .john:</span>       <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;John&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .shelley:</span>    <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Shelley&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .mark:</span>       <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Mark&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .renato:</span>     <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Renato&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    properties:</span>
+<span style='color:#644a9b;'>    .loud:</span>       <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Loud&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .obnoxious:</span>  <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Obnoxious&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .drunk:</span>      <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Drunk&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .quiet:</span>      <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Quiet&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .civil:</span>      <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Civil&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .strange:</span>    <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Strange&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .mighty:</span>     <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Mighty&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    messages:</span>
+<span style='color:#644a9b;'>    .lookup:</span>     <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Looking up %s =&gt; value %s&quot;</span>,<span style='color:#b08000;'>10</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .height:</span>     <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Tree height: %d&quot;</span>,<span style='color:#b08000;'>10</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .nodes:</span>      <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Tree nodes: %d&quot;</span>,<span style='color:#b08000;'>10</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .tree:</span>       <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Tree:&quot;</span>,<span style='color:#b08000;'>10</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .node:</span>       <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;key: %s %s value: %s&quot;</span>,<span style='color:#b08000;'>10</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    userdata:</span>    <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;=&gt;&quot;</span>,<span style='color:#b08000;'>0</span>
+    
+<b>section</b> .data
+
+<span style='color:#644a9b;'>    tree:</span>        <span style='color:#0057ae;'>dq</span>    <span style='color:#b08000;'>0</span>        <span style='color:#898887;'>;start of the tree</span>
+<span style='color:#644a9b;'>    flag:</span>        <span style='color:#0057ae;'>db</span>    <span style='color:#b08000;'>0</span>
+    
+<b>section</b> .text
+<b>global</b> _start
+
+<span style='color:#644a9b;'>_start:</span>
+    <span style='color:#898887;'>;create tree with compare function</span>
+    <b>mov</b>     <b>rdi</b>,compare
+    <b>call</b>    g_tree_new
+    <b>mov</b>     [tree],<b>rax</b>
+    <span style='color:#898887;'>;insert the key/value pairs</span>
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>mov</b>     <b>rsi</b>,names.fred
+    <b>mov</b>     <b>rdx</b>,properties.loud
+    <b>call</b>    g_tree_insert
+    
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>mov</b>     <b>rsi</b>,names.mary
+    <b>mov</b>     <b>rdx</b>,properties.obnoxious
+    <b>call</b>    g_tree_insert 
+    
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>mov</b>     <b>rsi</b>,names.sue
+    <b>mov</b>     <b>rdx</b>,properties.drunk
+    <b>call</b>    g_tree_insert 
+
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>mov</b>     <b>rsi</b>,names.<b>jo</b>hn 
+    <b>mov</b>     <b>rdx</b>,properties.quiet
+    <b>call</b>    g_tree_insert 
+
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>mov</b>     <b>rsi</b>,names.shelley 
+    <b>mov</b>     <b>rdx</b>,properties.civil
+    <b>call</b>    g_tree_insert 
+
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>mov</b>     <b>rsi</b>,names.mark 
+    <b>mov</b>     <b>rdx</b>,properties.strange
+    <b>call</b>    g_tree_insert 
+
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>mov</b>     <b>rsi</b>,names.renato 
+    <b>mov</b>     <b>rdx</b>,properties.mighty
+    <b>call</b>    g_tree_insert
+    <span style='color:#898887;'>;search if Fred is in the list and print result</span>
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>mov</b>     <b>rsi</b>,names.fred
+    <b>call</b>    g_tree_lookup
+    <b>mov</b>     <b>rdx</b>,<b>rax</b>
+    <b>mov</b>     <b>rdi</b>,messages.lookup
+    <b>xor</b>     <b>rax</b>,<b>rax</b>
+    <b>call</b>    g_print
+    <span style='color:#898887;'>;get tree height and print result</span>
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>call</b>    g_tree_height
+    <b>mov</b>     <b>rsi</b>,<b>rax</b>
+    <b>mov</b>     <b>rdi</b>,messages.height
+    <b>xor</b>     <b>rax</b>,<b>rax</b>
+    <b>call</b>    g_print
+    <span style='color:#898887;'>;get tree nodes and print result</span>
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>call</b>    g_tree_nnodes
+    <b>mov</b>     <b>rsi</b>,<b>rax</b>
+    <b>mov</b>     <b>rdi</b>,messages.nodes
+    <b>xor</b>     <b>rax</b>,<b>rax</b>
+    <b>call</b>    g_print
+    <span style='color:#898887;'>;print nodes 0 to NNODES </span>
+    <b>mov</b>     <b>rdi</b>,messages.tree
+    <b>xor</b>     <b>rax</b>,<b>rax</b>
+    <b>call</b>    g_print
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>mov</b>     <b>rsi</b>,display
+    <b>mov</b>     <b>rdx</b>,userdata
+    <b>call</b>    g_tree_foreach
+    <span style='color:#898887;'>;destroy our tree and the pointer</span>
+    <b>mov</b>     <b>rdi</b>,[tree]
+    <b>call</b>    g_tree_destroy
+    <b>xor</b>     <b>rdi</b>,<b>rdi</b>
+    <b>mov</b>     [tree],<b>rdi</b>                 <span style='color:#898887;'>;destroy pointer too</span>
+    <span style='color:#898887;'>;exit the program</span>
+    <b>xor</b>     <b>rdi</b>,<b>rdi</b>
+    <b>call</b>    exit
+
+<span style='color:#644a9b;'>display:</span>
+    <b>push</b>    <b>rbp</b>
+    <b>mov</b>     <b>rbp</b>,<b>rsp</b>
+    <b>mov</b>     <b>rcx</b>,<b>rsi</b>
+    <b>mov</b>     <b>rsi</b>,<b>rdi</b>
+    <b>mov</b>     <b>rdi</b>,messages.node
+    <b>xor</b>     <b>rax</b>,<b>rax</b>
+    <b>call</b>    g_print
+    <b>xor</b>     <b>rax</b>,<b>rax</b>
+    <b>inc</b>     <span style='color:#0057ae;'>byte</span>[flag]
+    <b>cmp</b>     <span style='color:#0057ae;'>byte</span>[flag],NNODES          <span style='color:#898887;'>;stop after n nodes</span>
+    <b>jl</b>      .exit
+    <b>inc</b>     <b>rax</b>                        <span style='color:#898887;'>;return TRUE</span>
+<span style='color:#644a9b;'>.exit:</span>
+    <b>mov</b>     <b>rsp</b>,<b>rbp</b>
+    <b>pop</b>     <b>rbp</b>
+    <b>ret</b>
+    
+<span style='color:#644a9b;'>compare:</span>
+    <span style='color:#898887;'>;compare strings in rdi and rsi, returning</span>
+    <span style='color:#898887;'>;-1 when string rdi comes before string rsi</span>
+    <span style='color:#898887;'>; 0 when both strings are equal</span>
+    <span style='color:#898887;'>; 1 when string in rsi comes after string rdi</span>
+    <b>call</b>    strcmp
+    <b>ret</b></pre>
+</body>
+</html>
