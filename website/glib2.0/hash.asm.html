@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="Generator" content="Kate, the KDE Advanced Text Editor" />
+<title>hash.asm</title>
+</head>
+<!-- Highlighting: "Intel x86 (NASM)" -->
+<body>
+<pre style='color:#1f1c1b;background-color:#ffffff;'>
+<span style='color:#898887;'>; Name            : hash.asm</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>; Build           : aclocal &amp;&amp; autoconf &amp;&amp; automake --add-missing --foreign</span>
+<span style='color:#898887;'>;                   mkdir build</span>
+<span style='color:#898887;'>;                   cd build</span>
+<span style='color:#898887;'>;                   ../configure</span>
+<span style='color:#898887;'>;                   make</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>; Description     : an example of glib 2.0 hash tables</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>; Source:         : https://github.com/steshaw/gtk-examples</span>
+
+<b>bits</b><span style='color:#b08000;'> 64</span>
+
+[list -]
+    <b>extern</b>    g_hash_table_new
+    <b>extern</b>    g_hash_table_destroy
+    <b>extern</b>    g_hash_table_insert
+    <b>extern</b>    g_hash_table_foreach
+    <b>extern</b>    g_direct_hash
+    <b>extern</b>    g_direct_equal    
+    <b>extern</b>    g_print
+    <b>extern</b>    exit
+[list +]
+
+<b>section</b> .rodata
+
+<span style='color:#644a9b;'>    prtKeyValue:</span>      <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;%d : %s %s %s&quot;</span>,<span style='color:#b08000;'>10</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    testline1:</span>        <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;-----&quot;</span>,<span style='color:#b08000;'>10</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    testline2:</span>        <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;compare %s - %s&quot;</span>,<span style='color:#b08000;'>10</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    testline3:</span>        <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;create hash for %10s : %d&quot;</span>,<span style='color:#b08000;'>10</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    userdata:</span>         <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;=&gt;&quot;</span>,<span style='color:#b08000;'>0</span>
+
+<span style='color:#644a9b;'>    keys:</span>
+<span style='color:#644a9b;'>    .fred:</span>            <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Fred&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .mary:</span>            <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Mary&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .sue:</span>             <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Sue&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .john:</span>            <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;John&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .shelley:</span>         <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Shelley&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .markus:</span>          <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Markus&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .renato:</span>          <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Renato&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    values:</span>
+<span style='color:#644a9b;'>    .boring:</span>          <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Boring&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .shifty:</span>          <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Shifty&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .nice:</span>            <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Nice&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .strange:</span>         <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Strange&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .abnormal:</span>        <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Abnormal&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .absentminded:</span>    <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Absent minded&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .paranoid:</span>        <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Paranoid&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .smart:</span>           <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Smart&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .intelligent:</span>     <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Intelligent&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    .stubbytoes:</span>      <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;Stubby toes&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    datapairs:</span>        <span style='color:#0057ae;'>dq</span>    keys.fred,values.boring
+                      <span style='color:#0057ae;'>dq</span>    keys.mary,values.shifty
+                      <span style='color:#0057ae;'>dq</span>    keys.sue,values.nice
+                      <span style='color:#0057ae;'>dq</span>    keys.<b>jo</b>hn,values.strange
+                      <span style='color:#0057ae;'>dq</span>    keys.shelley,values.abnormal
+                      <span style='color:#0057ae;'>dq</span>    keys.markus,values.absentminded
+                      <span style='color:#0057ae;'>dq</span>    keys.renato,values.paranoid
+                      <span style='color:#0057ae;'>dq</span>    keys.renato,values.smart
+                      <span style='color:#0057ae;'>dq</span>    keys.renato,values.intelligent
+                      <span style='color:#0057ae;'>dq</span>    keys.renato,values.stubbytoes
+                      <span style='color:#0057ae;'>dq</span>    <span style='color:#b08000;'>0</span>
+
+<b>section</b> .data
+
+<span style='color:#644a9b;'>    hTable:</span>           <span style='color:#0057ae;'>dq</span>    <span style='color:#b08000;'>0</span>
+        
+<b>section</b> .text
+<b>global</b> _start
+
+<span style='color:#644a9b;'>_start:</span>
+    <span style='color:#898887;'>;create new hashtable and store handler in hTable</span>
+    <b>mov</b>     <b>rsi</b>,g_direct_equal
+    <b>mov</b>     <b>rdi</b>,g_direct_hash
+    <b>call</b>    g_hash_table_new
+    <b>mov</b>     [hTable],<b>rax</b>
+    <span style='color:#898887;'>;read all key/value pairs and store them in the hashtable</span>
+    <b>mov</b>     <b>r15</b>,<b>rax</b>
+    <b>mov</b>     <b>r14</b>,datapairs
+<span style='color:#644a9b;'>.repeat:</span>
+    <b>mov</b>     <b>rax</b>,[<b>r14</b>]
+    <b>test</b>    <b>rax</b>,<b>rax</b>
+    <b>jz</b>      .endoflist
+    <b>mov</b>     <b>rdx</b>,[<b>r14</b>+<span style='color:#b08000;'>8</span>]
+    <b>mov</b>     <b>rsi</b>,[<b>r14</b>]
+    <b>mov</b>     <b>rdi</b>,<b>r15</b>
+    <b>call</b>    g_hash_table_insert
+    <b>add</b>     <b>r14</b>,<span style='color:#b08000;'>16</span>
+    <b>jmp</b>     .repeat
+<span style='color:#644a9b;'>.endoflist:</span>
+    <span style='color:#898887;'>;print the hashtable items</span>
+    <b>mov</b>     <b>rdi</b>,[hTable]
+    <b>mov</b>     <b>rsi</b>,fnPrintTable
+    <b>mov</b>     <b>rdx</b>,userdata
+    <b>call</b>    g_hash_table_foreach
+    <span style='color:#898887;'>;destroy the hashtable</span>
+    <b>mov</b>     <b>rdi</b>,[hTable]
+    <b>call</b>    g_hash_table_destroy
+    <span style='color:#898887;'>;exit the program</span>
+    <b>xor</b>     <b>rdi</b>,<b>rdi</b>
+    <b>call</b>    exit
+
+<span style='color:#644a9b;'>fnPrintTable:</span>
+    <span style='color:#898887;'>;routine to print a single hashtable key/value pair</span>
+    <span style='color:#898887;'>;with mask &quot;%d : %s %s %s&quot;</span>
+    <span style='color:#898887;'>;rdi = output mask</span>
+    <span style='color:#898887;'>;rsi = pointer to key</span>
+    <span style='color:#898887;'>;rcx = pointer to value</span>
+    <span style='color:#898887;'>;rdx = pointer to user data (in this case =&gt;)</span>
+    <span style='color:#898887;'>;%d(rsi) %s(rsi) %s(rdx) %s(rcx)</span>
+    <span style='color:#898887;'>;the function starts with rdi=pointer to key</span>
+    <span style='color:#898887;'>;                         rsi=pointer to value</span>
+    <span style='color:#898887;'>;                         rdx=pointer tu user data</span>
+    <b>push</b>    <b>rbp</b>
+    <b>mov</b>     <b>rbp</b>,<b>rsp</b>
+    <b>mov</b>     <b>r8</b>,<b>rsi</b>            <span style='color:#898887;'>;pointer to value</span>
+    <b>mov</b>     <b>rcx</b>,<b>rdx</b>           <span style='color:#898887;'>;rcx = user data (=&gt;)</span>
+    <b>mov</b>     <b>rdx</b>,<b>rdi</b>           <span style='color:#898887;'>;rdx = pointer to key displayed as string</span>
+    <b>mov</b>     <b>rsi</b>,<b>rdi</b>           <span style='color:#898887;'>;rsi = pointer to key displayed as pointer</span>
+    <b>mov</b>     <b>rdi</b>,prtKeyValue   <span style='color:#898887;'>;rdi = mask</span>
+    <b>xor</b>     <b>rax</b>,<b>rax</b>
+    <b>call</b>    g_print
+    <b>mov</b>     <b>rsp</b>,<b>rbp</b>
+    <b>pop</b>     <b>rbp</b>
+    <b>ret</b>    </pre>
+</body>
+</html>
