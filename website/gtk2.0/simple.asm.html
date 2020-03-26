@@ -38,10 +38,12 @@
     <b>extern</b>     exit
 [list +]
 
+<b>section</b> .rodata
+<span style='color:#644a9b;'>    szTitle:</span>      <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;simple&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szDestroy:</span>    <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;destroy&quot;</span>,<span style='color:#b08000;'>0</span>
+
 <b>section</b> .data
 <span style='color:#644a9b;'>    window:</span>       <span style='color:#0057ae;'>dq</span>    <span style='color:#b08000;'>0</span>
-<span style='color:#644a9b;'>    title:</span>        <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;simple&quot;</span>,<span style='color:#b08000;'>0</span>
-<span style='color:#644a9b;'>    szDestroy:</span>    <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;destroy&quot;</span>,<span style='color:#b08000;'>0</span>
     
 <b>section</b> .text
 <b>global</b> _start
@@ -61,7 +63,7 @@
     <b>mov</b>     <span style='color:#0057ae;'>qword</span>[window],<b>rax</b>
     <span style='color:#898887;'>;set the title</span>
     <b>mov</b>     <b>rdi</b>,<b>rax</b>
-    <b>mov</b>     <b>rsi</b>,title
+    <b>mov</b>     <b>rsi</b>,szTitle
     <b>call</b>    gtk_window_set_title
     <span style='color:#898887;'>;connect the destroy signal to gtk_main_quit event handler</span>
     <b>xor</b>     <b>r9d</b>,<b>r9d</b>                    <span style='color:#898887;'>; combination of GConnectFlags </span>

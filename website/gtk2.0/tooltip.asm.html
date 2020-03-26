@@ -41,10 +41,10 @@
 [list +]
 
 <b>section</b> .rodata
-<span style='color:#644a9b;'>    title:</span>         <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;Tooltip&quot;</span>, <span style='color:#b08000;'>0</span>
-<span style='color:#644a9b;'>    szDestroy:</span>     <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;destroy&quot;</span>, <span style='color:#b08000;'>0</span>
-<span style='color:#644a9b;'>    caption:</span>       <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;Button&quot;</span>, <span style='color:#b08000;'>0</span>
-<span style='color:#644a9b;'>    tooltip:</span>       <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;Button Widget&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szTitle:</span>         <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;Tooltip&quot;</span>, <span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szDestroy:</span>       <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;destroy&quot;</span>, <span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szCaption:</span>       <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;Button&quot;</span>, <span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szTooltip:</span>       <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;Button Widget&quot;</span>,<span style='color:#b08000;'>0</span>
 
 <b>section</b> .data
 <span style='color:#644a9b;'>    window:</span>        <span style='color:#0057ae;'>dq</span>  <span style='color:#b08000;'>0</span>
@@ -65,7 +65,7 @@
     <b>mov</b>     <span style='color:#0057ae;'>qword</span>[window],<b>rax</b>
     <span style='color:#898887;'>;set title</span>
     <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]         
-    <b>mov</b>     <b>rsi</b>,title
+    <b>mov</b>     <b>rsi</b>,szTitle
     <b>call</b>    gtk_window_set_title
     <span style='color:#898887;'>;set size</span>
     <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]         
@@ -77,12 +77,12 @@
     <b>mov</b>     <b>rsi</b>,<span style='color:#b08000;'>15</span>                          <span style='color:#898887;'>;borderwidth</span>
     <b>call</b>    gtk_container_set_border_width
     <span style='color:#898887;'>;create a button</span>
-    <b>mov</b>     <b>rdi</b>,caption
+    <b>mov</b>     <b>rdi</b>,szCaption
     <b>call</b>    gtk_button_new_with_label
     <b>mov</b>     <span style='color:#0057ae;'>qword</span>[button],<b>rax</b>
     <span style='color:#898887;'>;set the button tooltip</span>
     <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[button]
-    <b>mov</b>     <b>rsi</b>,tooltip
+    <b>mov</b>     <b>rsi</b>,szTooltip
     <b>call</b>    gtk_widget_set_tooltip_text
     <span style='color:#898887;'>;horizontal alignment</span>
     <b>xor</b>     <b>rdi</b>,<b>rdi</b>

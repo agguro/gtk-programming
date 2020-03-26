@@ -39,7 +39,7 @@
 [list +]
 
 <b>section</b> .rodata
-<span style='color:#644a9b;'>    title:</span>         <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;center&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szTitle:</span>       <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;center&quot;</span>,<span style='color:#b08000;'>0</span>
 <span style='color:#644a9b;'>    szDestroy:</span>     <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;destroy&quot;</span>,<span style='color:#b08000;'>0</span>
 
 <b>section</b> .data
@@ -59,7 +59,7 @@
     <b>mov</b>     <span style='color:#0057ae;'>qword</span>[window],<b>rax</b>
     <span style='color:#898887;'>;set window title</span>
     <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]
-    <b>mov</b>     <b>rsi</b>,title
+    <b>mov</b>     <b>rsi</b>,szTitle
     <b>call</b>    gtk_window_set_title
     <span style='color:#898887;'>;set the window size</span>
     <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]
