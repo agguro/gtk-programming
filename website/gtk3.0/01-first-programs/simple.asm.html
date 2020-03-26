@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="Generator" content="Kate, the KDE Advanced Text Editor" />
+<title>simple.asm</title>
+</head>
+<!-- Highlighting: "Intel x86 (NASM)" -->
+<body>
+<pre style='color:#1f1c1b;background-color:#ffffff;'>
+<span style='color:#898887;'>; Name        : simple.asm</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>; Build       : aclocal &amp;&amp; autoconf &amp;&amp; automake --add-missing --foreign</span>
+<span style='color:#898887;'>;               mkdir build</span>
+<span style='color:#898887;'>;               cd build</span>
+<span style='color:#898887;'>;               ../configure</span>
+<span style='color:#898887;'>;               make</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>; Description : a simple window with the basic functionalities and a title</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>; Source      : http://zetcode.com/gui/gtk2/firstprograms/</span>
+
+<b>bits</b><span style='color:#b08000;'> 64</span>
+
+[list -]
+    <span style='color:#006e28;'>%define    GTK_WINDOW_TOPLEVEL   0</span>
+    <span style='color:#006e28;'>%define    GTK_WIN_POS_CENTER    1</span>
+    <span style='color:#006e28;'>%define    FALSE                 0</span>
+    <span style='color:#006e28;'>%define    TRUE                  1</span>
+    <b>extern</b>     gtk_init
+    <b>extern</b>     gtk_main
+    <b>extern</b>     gtk_main_quit
+    <b>extern</b>     gtk_widget_show
+    <b>extern</b>     gtk_window_new
+    <b>extern</b>     gtk_window_set_title
+    <b>extern</b>     g_signal_connect_data
+    <b>extern</b>     exit
+[list +]
+
+<b>section</b> .rodata
+<span style='color:#644a9b;'>    szTitle:</span>      <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;simple&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szDestroy:</span>    <span style='color:#0057ae;'>db</span>    <span style='color:#bf0303;'>&quot;destroy&quot;</span>,<span style='color:#b08000;'>0</span>
+
+<b>section</b> .data
+<span style='color:#644a9b;'>    window:</span>       <span style='color:#0057ae;'>dq</span>    <span style='color:#b08000;'>0</span>
+    
+<b>section</b> .text
+<b>global</b> _start
+
+<span style='color:#644a9b;'>_start:</span>
+    <span style='color:#898887;'>;init gtk</span>
+    <b>xor</b>     <b>rdi</b>,<b>rdi</b>                 
+    <b>xor</b>     <b>rsi</b>,<b>rsi</b>
+    <b>call</b>    gtk_init
+    <span style='color:#898887;'>;if initialization doesn't succeed then the application</span>
+    <span style='color:#898887;'>;terminates.  If that is unwanted behaviour then we need</span>
+    <span style='color:#898887;'>;to use gtk_init_check instead.</span>
+    <span style='color:#898887;'>;https://developer.gnome.org/gtk2/stable/gtk2-General.html#gtk-init</span>
+    <span style='color:#898887;'>;create a new window</span>
+    <b>mov</b>     <b>rdi</b>,GTK_WINDOW_TOPLEVEL
+    <b>call</b>    gtk_window_new
+    <b>mov</b>     <span style='color:#0057ae;'>qword</span>[window],<b>rax</b>
+    <span style='color:#898887;'>;set the title</span>
+    <b>mov</b>     <b>rdi</b>,<b>rax</b>
+    <b>mov</b>     <b>rsi</b>,szTitle
+    <b>call</b>    gtk_window_set_title
+    <span style='color:#898887;'>;connect the destroy signal to gtk_main_quit event handler</span>
+    <b>xor</b>     <b>r9d</b>,<b>r9d</b>                    <span style='color:#898887;'>; combination of GConnectFlags </span>
+    <b>xor</b>     <b>r8d</b>,<b>r8d</b>                    <span style='color:#898887;'>; a GClosureNotify for data</span>
+    <b>xor</b>     <b>rcx</b>,<b>rcx</b>                    <span style='color:#898887;'>; pointer to the data to pass</span>
+    <b>mov</b>     <b>rdx</b>,gtk_main_quit          <span style='color:#898887;'>; pointer to the handler</span>
+    <b>mov</b>     <b>rsi</b>,szDestroy              <span style='color:#898887;'>; pointer to the signal</span>
+    <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]          <span style='color:#898887;'>; pointer to the widget instance</span>
+    <span style='color:#898887;'>;C programs uses g_signal_connect, this is not a library</span>
+    <span style='color:#898887;'>;function.</span>
+    <b>call</b>    g_signal_connect_data
+    <span style='color:#898887;'>;show the window</span>
+    <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]
+    <b>call</b>    gtk_widget_show
+    <span style='color:#898887;'>;go into applications main loop</span>
+    <b>call</b>    gtk_main
+<span style='color:#644a9b;'>.exit:</span>    
+    <span style='color:#898887;'>;exit program</span>
+    <b>xor</b>     <b>rdi</b>,<b>rdi</b>
+    <b>call</b>    exit
+</pre>
+</body>
+</html>
