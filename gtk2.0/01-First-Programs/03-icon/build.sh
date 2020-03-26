@@ -5,7 +5,7 @@ autoconf
 automake --add-missing --foreign
 echo "building ..."
 mkdir build
-cp agguro.png build/
+cp icon.png build/
 cd build
 ../configure
 make

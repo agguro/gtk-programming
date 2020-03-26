@@ -28,7 +28,7 @@ bits 64
 [list +]
 
 section .rodata
-    title:         db  "center",0
+    szTitle:       db  "center",0
     szDestroy:     db  "destroy",0
 
 section .data
@@ -48,7 +48,7 @@ _start:
     mov     qword[window],rax
     ;set window title
     mov     rdi,qword[window]
-    mov     rsi,title
+    mov     rsi,szTitle
     call    gtk_window_set_title
     ;set the window size
     mov     rdi,qword[window]

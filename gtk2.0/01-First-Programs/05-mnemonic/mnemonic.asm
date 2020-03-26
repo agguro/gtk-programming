@@ -32,7 +32,7 @@ bits 64
 [list +]
 
 section .rodata
-    title:       db  "Mnemonic - press ALT-B",0
+    szTitle:     db  "Mnemonic - press ALT-B",0
     szDestroy:   db  "destroy",0
     szClicked:   db  "clicked",0
     szCaption:   db  "_Button",0
@@ -57,7 +57,7 @@ _start:
     mov     qword[window],rax
     ;set title
     mov     rdi,qword[window]         
-    mov     rsi,window.title
+    mov     rsi,szTitle
     call    gtk_window_set_title
     ;set size
     mov     rdi,qword[window]         
@@ -112,7 +112,7 @@ _start:
     call    exit
     ;event handler for signal button.clicked
 print_msg:
-    mov     rdi,message
+    mov     rdi,szMessage
     xor     rax,rax
     call    g_printf
     ret

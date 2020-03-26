@@ -36,7 +36,7 @@ bits 64
 section .rodata
     szTitle:        db   "icon",0
     szDestroy:      db   "destroy",0
-    szFile:         db   "agguro.png",0                   ;must reside in the same directory
+    szFile:         db   "icon.png",0                   ;must reside in the same directory
     szErrPixbuf:    db   "ERROR loading %s",10,0
 
 section .data

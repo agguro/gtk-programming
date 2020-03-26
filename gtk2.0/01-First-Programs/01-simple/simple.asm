@@ -27,10 +27,12 @@ bits 64
     extern     exit
 [list +]
 
+section .rodata
+    szTitle:      db    "simple",0
+    szDestroy:    db    "destroy",0
+
 section .data
     window:       dq    0
-    title:        db    "simple",0
-    szDestroy:    db    "destroy",0
     
 section .text
 global _start
@@ -50,7 +52,7 @@ _start:
     mov     qword[window],rax
     ;set the title
     mov     rdi,rax
-    mov     rsi,title
+    mov     rsi,szTitle
     call    gtk_window_set_title
     ;connect the destroy signal to gtk_main_quit event handler
     xor     r9d,r9d                    ; combination of GConnectFlags 

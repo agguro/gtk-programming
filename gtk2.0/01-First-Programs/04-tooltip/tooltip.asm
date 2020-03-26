@@ -30,10 +30,10 @@ bits 64
 [list +]
 
 section .rodata
-    title:         db  "Tooltip", 0
-    szDestroy:     db  "destroy", 0
-    caption:       db  "Button", 0
-    tooltip:       db  "Button Widget",0
+    szTitle:         db  "Tooltip", 0
+    szDestroy:       db  "destroy", 0
+    szCaption:       db  "Button", 0
+    szTooltip:       db  "Button Widget",0
 
 section .data
     window:        dq  0
@@ -54,7 +54,7 @@ _start:
     mov     qword[window],rax
     ;set title
     mov     rdi,qword[window]         
-    mov     rsi,title
+    mov     rsi,szTitle
     call    gtk_window_set_title
     ;set size
     mov     rdi,qword[window]         
@@ -66,12 +66,12 @@ _start:
     mov     rsi,15                          ;borderwidth
     call    gtk_container_set_border_width
     ;create a button
-    mov     rdi,caption
+    mov     rdi,szCaption
     call    gtk_button_new_with_label
     mov     qword[button],rax
     ;set the button tooltip
     mov     rdi,qword[button]
-    mov     rsi,tooltip
+    mov     rsi,szTooltip
     call    gtk_widget_set_tooltip_text
     ;horizontal alignment
     xor     rdi,rdi
