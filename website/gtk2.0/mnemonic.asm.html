@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="Generator" content="Kate, the KDE Advanced Text Editor" />
+<title>mnemonic.asm</title>
+</head>
+<!-- Highlighting: "Intel x86 (NASM)" -->
+<body>
+<pre style='color:#1f1c1b;background-color:#ffffff;'>
+<span style='color:#898887;'>; Name        : mnemonic.asm</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>; Build       : aclocal &amp;&amp; autoconf &amp;&amp; automake --add-missing --foreign</span>
+<span style='color:#898887;'>;               mkdir build</span>
+<span style='color:#898887;'>;               cd build</span>
+<span style='color:#898887;'>;               ../configure</span>
+<span style='color:#898887;'>;               make</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>; Description : mnemonic demo. once the window is on-screen, press ALT-B</span>
+<span style='color:#898887;'>;               the program must run in a terminal otherwise it seems dead</span>
+<span style='color:#898887;'>;</span>
+<span style='color:#898887;'>; Source      : http://zetcode.com/gui/gtk2/firstprograms/</span>
+
+<b>bits</b><span style='color:#b08000;'> 64</span>
+
+[list -]
+    <b>extern</b>    gtk_init
+    <b>extern</b>    gtk_window_new
+    <b>extern</b>    gtk_window_set_title
+    <b>extern</b>    gtk_window_set_default_size
+    <b>extern</b>    gtk_container_set_border_width
+    <b>extern</b>    gtk_button_new_with_mnemonic
+    <b>extern</b>    gtk_widget_set_tooltip_text
+    <b>extern</b>    gtk_alignment_new
+    <b>extern</b>    gtk_container_add
+    <b>extern</b>    gtk_widget_show_all
+    <b>extern</b>    gtk_main_quit
+    <b>extern</b>    g_signal_connect_data
+    <b>extern</b>    gtk_main
+    <b>extern</b>    exit
+    <b>extern</b>    g_printf
+[list +]
+
+<b>section</b> .rodata
+<span style='color:#644a9b;'>    title:</span>       <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;Mnemonic - press ALT-B&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szDestroy:</span>   <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;destroy&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szClicked:</span>   <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;clicked&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szCaption:</span>   <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;_Button&quot;</span>,<span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    szMessage:</span>   <span style='color:#0057ae;'>db</span>  <span style='color:#bf0303;'>&quot;Button clicked&quot;</span>,<span style='color:#b08000;'>10</span>,<span style='color:#b08000;'>0</span>        
+
+<b>section</b> .data
+<span style='color:#644a9b;'>    window:</span>      <span style='color:#0057ae;'>dq</span>  <span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    button:</span>      <span style='color:#0057ae;'>dq</span>  <span style='color:#b08000;'>0</span>
+<span style='color:#644a9b;'>    halign:</span>      <span style='color:#0057ae;'>dq</span>  <span style='color:#b08000;'>0</span>
+
+<b>section</b> .text
+
+<b>global</b> _start
+<span style='color:#644a9b;'>_start:</span>
+    <span style='color:#898887;'>;init gtk</span>
+    <b>xor</b>     <b>rsi</b>,<b>rsi</b>                         <span style='color:#898887;'>;argv</span>
+    <b>xor</b>     <b>rdi</b>,<b>rdi</b>                         <span style='color:#898887;'>;argc</span>
+    <b>call</b>    gtk_init
+    <span style='color:#898887;'>;the main window</span>
+    <b>xor</b>     <b>rdi</b>,<b>rdi</b>                         <span style='color:#898887;'>;GTK_WINDOW_TOPLEVEL = 0 in RDI</span>
+    <b>call</b>    gtk_window_new
+    <b>mov</b>     <span style='color:#0057ae;'>qword</span>[window],<b>rax</b>
+    <span style='color:#898887;'>;set title</span>
+    <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]         
+    <b>mov</b>     <b>rsi</b>,window.title
+    <b>call</b>    gtk_window_set_title
+    <span style='color:#898887;'>;set size</span>
+    <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]         
+    <b>mov</b>     <b>rsi</b>,<span style='color:#b08000;'>300</span>                         <span style='color:#898887;'>;width</span>
+    <b>mov</b>     <b>rdx</b>,<span style='color:#b08000;'>200</span>                         <span style='color:#898887;'>;height</span>
+    <b>call</b>    gtk_window_set_default_size
+    <span style='color:#898887;'>;set border width</span>
+    <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]         
+    <b>mov</b>     <b>rsi</b>,<span style='color:#b08000;'>15</span>                          <span style='color:#898887;'>;borderwidth</span>
+    <b>call</b>    gtk_container_set_border_width
+    <span style='color:#898887;'>;create a button</span>
+    <b>mov</b>     <b>rdi</b>,szCaption
+    <b>call</b>    gtk_button_new_with_mnemonic
+    <b>mov</b>     <span style='color:#0057ae;'>qword</span>[button],<b>rax</b>
+    <span style='color:#898887;'>;horizontal alignment</span>
+    <b>xor</b>     <b>rdi</b>,<b>rdi</b>
+    <b>xor</b>     <b>rsi</b>,<b>rsi</b>
+    <b>xor</b>     <b>rdx</b>,<b>rdx</b>
+    <b>call</b>    gtk_alignment_new
+    <b>mov</b>     <span style='color:#0057ae;'>qword</span>[halign],<b>rax</b>
+    <span style='color:#898887;'>;add the button to the halign container</span>
+    <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[halign]
+    <b>mov</b>     <b>rsi</b>,<span style='color:#0057ae;'>qword</span>[button]
+    <b>call</b>    gtk_container_add
+    <span style='color:#898887;'>;add the halign container to the window</span>
+    <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]
+    <b>mov</b>     <b>rsi</b>,<span style='color:#0057ae;'>qword</span>[halign]
+    <b>call</b>    gtk_container_add
+    <span style='color:#898887;'>;show window</span>
+    <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]
+    <b>call</b>    gtk_widget_show_all
+    <span style='color:#898887;'>;connect print_msg to the button clicked signal</span>
+    <b>xor</b>     <b>r9d</b>,<b>r9d</b>                         <span style='color:#898887;'>;combination of GConnectFlags</span>
+    <b>xor</b>     <b>r8d</b>,<b>r8d</b>                         <span style='color:#898887;'>;a GClosureNotify for data</span>
+    <b>mov</b>     <b>rcx</b>,<span style='color:#0057ae;'>qword</span>[window]               <span style='color:#898887;'>;pointer to window instance in RCX</span>
+    <b>mov</b>     <b>rdx</b>,print_msg                   <span style='color:#898887;'>;pointer to the handler</span>
+    <b>mov</b>     <b>rsi</b>,szClicked                   <span style='color:#898887;'>;pointer to the signal</span>
+    <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[button]               <span style='color:#898887;'>;pointer to window instance in RDI</span>
+    <b>call</b>    g_signal_connect_data           <span style='color:#898887;'>;the value in RAX is the handler, but we don't store it now</span>
+    <span style='color:#898887;'>;connect destroy signal to the window</span>
+    <b>xor</b>     <b>r9d</b>,<b>r9d</b>                         <span style='color:#898887;'>;combination of GConnectFlags</span>
+    <b>xor</b>     <b>r8d</b>,<b>r8d</b>                         <span style='color:#898887;'>;a GClosureNotify for data</span>
+    <b>mov</b>     <b>rcx</b>,<span style='color:#0057ae;'>qword</span>[window]               <span style='color:#898887;'>;pointer to window instance in RCX</span>
+    <b>mov</b>     <b>rdx</b>,gtk_main_quit               <span style='color:#898887;'>;pointer to the handler</span>
+    <b>mov</b>     <b>rsi</b>,szDestroy                   <span style='color:#898887;'>;pointer to the signal</span>
+    <b>mov</b>     <b>rdi</b>,<span style='color:#0057ae;'>qword</span>[window]               <span style='color:#898887;'>;pointer to window instance in RDI</span>
+    <b>call</b>    g_signal_connect_data           <span style='color:#898887;'>;the value in RAX is the handler, but we don't store it now</span>
+    <span style='color:#898887;'>;go into application main loop</span>
+    <b>call</b>    gtk_main
+    <span style='color:#898887;'>;exit program</span>
+    <b>xor</b>     <b>rdi</b>, <b>rdi</b>
+    <b>call</b>    exit
+    <span style='color:#898887;'>;event handler for signal button.clicked</span>
+<span style='color:#644a9b;'>print_msg:</span>
+    <b>mov</b>     <b>rdi</b>,message
+    <b>xor</b>     <b>rax</b>,<b>rax</b>
+    <b>call</b>    g_printf
+    <b>ret</b>
+</pre>
+</body>
+</html>
