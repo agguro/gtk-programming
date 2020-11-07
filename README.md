@@ -27,10 +27,10 @@ or use the build.sh script.
 
 When only sourcecode is available you can do it the 'old way'
 
-nasm -f elf64 -F dwarf -g progname.asm -o progname.o
-for GTK2+ examples
-ld -m elf_x86_64 -g --dynamic-linker /lib64/ld-linux-x86-64.so.2 -lc `pkg-config --libs gtk+-2.0` progname.o -o progname
-or
-for GTK3+ examples
-ld -m elf_x86_64 -g --dynamic-linker /lib64/ld-linux-x86-64.so.2 -lc `pkg-config --libs gtk+-3.0` progname.o -o progname
+    nasm -f elf64 -F dwarf -g progname.asm -o progname.o
+    for GTK2+ examples
+        ld -m elf_x86_64 -g --dynamic-linker /lib64/ld-linux-x86-64.so.2 -lc `pkg-config --libs gtk+-2.0` progname.o -o progname
+    or
+    for GTK3+ examples
+        ld -m elf_x86_64 -g --dynamic-linker /lib64/ld-linux-x86-64.so.2 -lc `pkg-config --libs gtk+-3.0` progname.o -o progname
 
