@@ -38,7 +38,7 @@ section .rodata
 section .data
     window:        dq  0
     button:        dq  0
-    halign:        dq  0
+    halign:        dq  1
         
 section .text
 
