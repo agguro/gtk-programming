@@ -57,7 +57,7 @@ bits 64
 [list +]
 
 section .rodata
-    szTitle:      db    "list view",0
+    szTitle:      db    "list view - Store",0
     szDestroy:    db    "destroy",0
     szChanged:    db    "changed",0
     szLabel:      db    "",0
