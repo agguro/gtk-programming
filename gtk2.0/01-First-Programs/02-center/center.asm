@@ -31,8 +31,8 @@ section .rodata
     szTitle:       db  "center",0
     szDestroy:     db  "destroy",0
 
-section .data
-    window:        dq  0
+section .bss
+    window:        resq  1
 
 section .text
 

@@ -38,10 +38,10 @@ section .rodata
     szCaption:   db  "_Button",0
     szMessage:   db  "Button clicked",10,0        
 
-section .data
-    window:      dq  0
-    button:      dq  0
-    halign:      dq  0
+section .bss
+    window:      resq  1
+    button:      resq  1
+    halign:      resq  1
 
 section .text
 

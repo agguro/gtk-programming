@@ -39,11 +39,11 @@ section .rodata
     szFile:         db   "icon.png",0                   ;must reside in the same directory
     szErrPixbuf:    db   "ERROR loading %s",10,0
 
-section .data
-    window:         dq   0
-    icon:           dq   0
-    pixbuffer:      dq   0
-    error:          dq   0
+section .bss
+    window:         resq   1
+    icon:           resq   1
+    pixbuffer:      resq   1
+    error:          resq   1
     
 section .text
     global _start

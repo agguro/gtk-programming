@@ -52,10 +52,10 @@ section .rodata
     .node:       db    "key: %s %s value: %s",10,0
     userdata:    db    "=>",0
     
-section .data
+section .bss
 
-    tree:        dq    0        ;start of the tree
-    flag:        db    0
+    tree:        resq    1        ;start of the tree
+    flag:        resb    1
     
 section .text
 global _start

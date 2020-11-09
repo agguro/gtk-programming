@@ -62,9 +62,9 @@ section .rodata
                       dq    keys.renato,values.stubbytoes
                       dq    0
 
-section .data
+section .bss
 
-    hTable:           dq    0
+    hTable:           resq    1
         
 section .text
 global _start

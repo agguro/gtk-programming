@@ -15,8 +15,6 @@ bits 64
 [list -]
     %define    GTK_WINDOW_TOPLEVEL   0
     %define    GTK_WIN_POS_CENTER    1
-    %define    FALSE                 0
-    %define    TRUE                  1
     extern     gtk_init
     extern     gtk_main
     extern     gtk_main_quit
@@ -31,8 +29,8 @@ section .rodata
     szTitle:      db    "simple",0
     szDestroy:    db    "destroy",0
 
-section .data
-    window:       dq    0
+section .bss
+    window:       resq    1
     
 section .text
 global _start
@@ -56,7 +54,7 @@ _start:
     call    gtk_window_set_title
     ;connect the destroy signal to gtk_main_quit event handler
     xor     r9d,r9d                    ; combination of GConnectFlags 
-    xor     r8d,r8d                    ; a GClosureNotify for data
+    xor     r8d,r8d                    ; a GlosureNotify for data
     xor     rcx,rcx                    ; pointer to the data to pass
     mov     rdx,gtk_main_quit          ; pointer to the handler
     mov     rsi,szDestroy              ; pointer to the signal

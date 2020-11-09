@@ -35,10 +35,10 @@ section .rodata
     szCaption:       db  "Button", 0
     szTooltip:       db  "Button Widget",0
 
-section .data
-    window:        dq  0
-    button:        dq  0
-    halign:        dq  1
+section .bss
+    window:        resq  1
+    button:        resq  1
+    halign:        resq  1
         
 section .text
 

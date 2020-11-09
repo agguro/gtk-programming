@@ -51,9 +51,9 @@ section .rodata
     .crlf:              db    10,0
     .lookup:            db    "looking up %s : ",0
     
-section .data
+section .bss
 
-    list:               dq    0            ;start of the list
+    list:               resq    1            ;start of the list
         
 section .text
 global _start
