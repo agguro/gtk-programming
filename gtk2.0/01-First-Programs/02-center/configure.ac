@@ -13,7 +13,6 @@ AC_SUBST([PACKAGE_NASMFLAGS])
 AC_SUBST([PACKAGE_LIBS])
 
 AM_INIT_AUTOMAKE(foreign)
-AM_PATH_GLIB_2_0([2.56.0],,AC_MSG_ERROR([GLib 2.56.0 or higher required.]))
 AM_PATH_GTK_2_0([2.10.0],,AC_MSG_ERROR([Gtk+ 2.10.0 or higher required.]))
 AC_CONFIG_FILES(Makefile)
 AC_OUTPUT
