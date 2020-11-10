@@ -1,19 +1,21 @@
 NASM = /usr/bin/nasm
 LD   = /usr/bin/ld
+
 bin_PROGRAMS = list
-list_NASMFLAGS = @PACKAGE_NASMFLAGS@
-list_LDFLAGS = @PACKAGE_LDFLAGS@
-list_LIBS = @PACKAGE_LIBS@
-list_SOURCES = $(bin_PROGRAMS).asm
+
+nasm_NASMFLAGS = @PACKAGE_NASMFLAGS@
+nasm_LDFLAGS = @PACKAGE_LDFLAGS@
+nasm_LIBS = @PACKAGE_LIBS@
+nasm_OBJS = main.o
 
 .asm.o:
-	$(NASM) $(list_NASMFLAGS) $< -o $@
+	$(NASM) $(nasm_NASMFLAGS) $< -o $@
 	
-list$(EXEEXT): $(bin_PROGRAMS).o
-	ld $(list_LDFLAGS) $(list_LIBS) $^ -o $@
+list$(EXEEXT): $(nasm_OBJS)
+	ld $(nasm_LDFLAGS) $(nasm_LIBS) $(nasm_OBJS) -o $(bin_PROGRAMS)
 	
 no-debug: $(bin_PROGRAMS)$(EXEEXT)
 	strip -s $(bin_PROGRAMS)$(EXEEXT)
 	
 clean:
-	rm -rf $(list_OBJS) $(bin_PROGRAMS)$(EXEEXT)
+	rm -rf $($(bin_PROGRAM)_OBJS) $(nasm_OBJS) $(bin_PROGRAMS)$(EXEEXT)

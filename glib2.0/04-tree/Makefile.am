@@ -1,19 +1,21 @@
 NASM = /usr/bin/nasm
 LD   = /usr/bin/ld
+
 bin_PROGRAMS = tree
-tree_NASMFLAGS = @PACKAGE_NASMFLAGS@
-tree_LDFLAGS = @PACKAGE_LDFLAGS@
-tree_LIBS = @PACKAGE_LIBS@
-tree_SOURCES = $(bin_PROGRAMS).asm
+
+nasm_NASMFLAGS = @PACKAGE_NASMFLAGS@
+nasm_LDFLAGS = @PACKAGE_LDFLAGS@
+nasm_LIBS = @PACKAGE_LIBS@
+nasm_OBJS = main.o
 
 .asm.o:
-	$(NASM) $(tree_NASMFLAGS) $< -o $@
+	$(NASM) $(nasm_NASMFLAGS) $< -o $@
 	
-tree$(EXEEXT): $(bin_PROGRAMS).o
-	ld $(tree_LDFLAGS) $(tree_LIBS) $^ -o $@
+tree$(EXEEXT): $(nasm_OBJS)
+	ld $(nasm_LDFLAGS) $(nasm_LIBS) $(nasm_OBJS) -o $(bin_PROGRAMS)
 	
 no-debug: $(bin_PROGRAMS)$(EXEEXT)
 	strip -s $(bin_PROGRAMS)$(EXEEXT)
 	
 clean:
-	rm -rf $(tree_OBJS) $(bin_PROGRAMS)$(EXEEXT)
+	rm -rf $($(bin_PROGRAM)_OBJS) $(nasm_OBJS) $(bin_PROGRAMS)$(EXEEXT)
