@@ -1,12 +1,12 @@
 AC_PREREQ([2.69])
 
-AC_INIT([[template]], [1.0.0], [aggurobe@gmail.com], [[teplate]],[https://linuxnasm.be])
+AC_INIT([__template__], [1.0.0], [aggurobe@gmail.com], [__template__],[https://linuxnasm.be])
 
 AX_PROG_NASM([nasm_avail="no"])
 
 PACKAGE_LDFLAGS="-m elf_x86_64 -g --dynamic-linker /lib64/ld-linux-x86-64.so.2"
 PACKAGE_NASMFLAGS="-f elf64 -F dwarf -g"
-PACKAGE_LIBS="-lc `pkg-config --libs gtk+-2.0`"
+PACKAGE_LIBS="-lc `pkg-config --libs gtk+-3.0`"
 
 AC_SUBST([PACKAGE_LDFLAGS])
 AC_SUBST([PACKAGE_NASMFLAGS])

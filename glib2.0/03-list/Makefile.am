@@ -3,19 +3,19 @@ LD   = /usr/bin/ld
 
 bin_PROGRAMS = list
 
-nasm_NASMFLAGS = @PACKAGE_NASMFLAGS@
-nasm_LDFLAGS = @PACKAGE_LDFLAGS@
-nasm_LIBS = @PACKAGE_LIBS@
-nasm_OBJS = main.o
+list_NASMFLAGS = @PACKAGE_NASMFLAGS@
+list_LDFLAGS = @PACKAGE_LDFLAGS@
+list_LIBS = @PACKAGE_LIBS@
+list_OBJS = main.o
 
 .asm.o:
-	$(NASM) $(nasm_NASMFLAGS) $< -o $@
+	$(NASM) $(list_NASMFLAGS) $< -o $@
 	
-list$(EXEEXT): $(nasm_OBJS)
-	ld $(nasm_LDFLAGS) $(nasm_LIBS) $(nasm_OBJS) -o $(bin_PROGRAMS)
+list$(EXEEXT): $(list_OBJS)
+	ld $(list_LDFLAGS) $(list_LIBS) $(list_OBJS) -o $(bin_PROGRAMS)
 	
 no-debug: $(bin_PROGRAMS)$(EXEEXT)
 	strip -s $(bin_PROGRAMS)$(EXEEXT)
 	
 clean:
-	rm -rf $($(bin_PROGRAM)_OBJS) $(nasm_OBJS) $(bin_PROGRAMS)$(EXEEXT)
+	rm -rf $($(bin_PROGRAM)_OBJS) $(list_OBJS) $(bin_PROGRAMS)$(EXEEXT)

@@ -1,17 +1,17 @@
 NASM = /usr/bin/nasm
 LD   = /usr/bin/ld
 
-bin_PROGRAMS = __template__
+bin_PROGRAMS = example01
 
 nasm_NASMFLAGS = @PACKAGE_NASMFLAGS@
 nasm_LDFLAGS = @PACKAGE_LDFLAGS@
 nasm_LIBS = @PACKAGE_LIBS@
-nasm_OBJS = main.o
+nasm_OBJS = mainwindow.o main.o
 
 .asm.o:
 	$(NASM) $(nasm_NASMFLAGS) $< -o $@
 	
-__template__$(EXEEXT): $(nasm_OBJS)
+window$(EXEEXT): $(nasm_OBJS)
 	ld $(nasm_LDFLAGS) $(nasm_LIBS) $(nasm_OBJS) -o $(bin_PROGRAMS)
 	
 no-debug: $(bin_PROGRAMS)$(EXEEXT)

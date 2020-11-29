@@ -73,9 +73,10 @@ _start:
     call    gtk_button_new_with_mnemonic
     mov     qword[button],rax
     ;horizontal alignment
-    xor     rdi,rdi
-    xor     rsi,rsi
-    xor     rdx,rdx
+    pxor   xmm3,xmm3
+    pxor   xmm2,xmm2
+    pxor   xmm2,xmm2
+    pxor   xmm0,xmm0
     call    gtk_alignment_new
     mov     qword[halign],rax
     ;add the button to the halign container

@@ -1,6 +1,6 @@
 AC_PREREQ([2.69])
 
-AC_INIT([version], [1.0.0], [aggurobe@gmail.com], [version],[https://linuxnasm.be])
+AC_INIT([window], [1.0.0], [aggurobe@gmail.com], [window],[https://linuxnasm.be])
 
 AX_PROG_NASM([nasm_avail="no"])
 
